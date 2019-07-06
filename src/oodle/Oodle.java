@@ -3,15 +3,11 @@
  */
 package oodle;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.concurrent.TimeUnit;
 
-import com.ochafik.lang.jnaerator.runtime.NativeSize;
 import com.sun.jna.Memory;
 import com.sun.jna.Pointer;
 
@@ -34,7 +30,7 @@ public class Oodle {
 		sourcePointer.write(0, src, 0, src_Length);
 		Memory resultPointer = new Memory(dst_Length);
 		resultPointer.write(0, dst, 0, dst_Length);
-		int resultCode = oodleLib.OodleLZ_Decompress(new OodleLibrary.uint8(sourcePointer), src_Length, new OodleLibrary.uint8(resultPointer),  new NativeSize(dst_Length), 0, 0, 0, new OodleLibrary.uint8(), new NativeSize(0), com.sun.jna.Pointer.createConstant(0), com.sun.jna.Pointer.createConstant(0), com.sun.jna.Pointer.createConstant(0), new NativeSize(0), 0);
+		int resultCode = oodleLib.OodleLZ_Decompress(new OodleLibrary.uint8(sourcePointer), src_Length, new OodleLibrary.uint8(resultPointer),  dst_Length, 0, 0, 0, new OodleLibrary.uint8(), 0, com.sun.jna.Pointer.createConstant(0), com.sun.jna.Pointer.createConstant(0), com.sun.jna.Pointer.createConstant(0), 0, 0);
 		double seconds = (double) ((System.currentTimeMillis() - start) / 1000) % 60 ;
 		if(resultCode <= 0) {
 			System.err.println("Oodle Decompression failed: " + resultCode);
@@ -59,7 +55,7 @@ public class Oodle {
 		inputPointer.write(0, input, 0, input_Size);
 		Memory resultPointer = new Memory(dst_Length);
 		resultPointer.write(0, dst, 0, dst_Length);
-		int resultCode = oodleLib.OodleLZ_Compress(compressor, new OodleLibrary.uint8(inputPointer), new NativeSize(input_Size), new OodleLibrary.uint8(resultPointer), compressionLevel, Pointer.createConstant(0), new NativeSize(0), new NativeSize(0), Pointer.createConstant(0), new NativeSize(0));
+		int resultCode = oodleLib.OodleLZ_Compress(compressor, new OodleLibrary.uint8(inputPointer), input_Size, new OodleLibrary.uint8(resultPointer), compressionLevel, Pointer.createConstant(0), 0, 0, Pointer.createConstant(0), 0);
 		double seconds = (double) ((System.currentTimeMillis() - start) / 1000) % 60 ;
 		if(resultCode <= 0) {
 			System.err.println("Oodle Compression failed: " + resultCode);
