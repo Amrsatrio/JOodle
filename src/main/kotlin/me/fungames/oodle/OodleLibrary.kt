@@ -5,7 +5,7 @@ import com.sun.jna.Native
 import com.sun.jna.Pointer
 
 
-interface OodleLibrary : Library {
+internal interface OodleLibrary : Library {
     /**
      * Original signature : `int OodleLZ_Compress(int, uint8*, size_t, uint8*, int, void*, size_t, size_t, void*, size_t)`<br></br>
      * *native declaration : line 2*
@@ -44,8 +44,7 @@ interface OodleLibrary : Library {
     ): Int
 
     companion object {
-        val JNA_LIBRARY_NAME = "oo2core_7_win64"
-        //val JNA_NATIVE_LIB = NativeLibrary.getInstance(OodleLibrary.JNA_LIBRARY_NAME)
-        val INSTANCE = Native.loadLibrary(OodleLibrary.JNA_LIBRARY_NAME, OodleLibrary::class.java) as OodleLibrary
+        const val JNA_LIBRARY_NAME = "oo2core_7_win64"
+        val INSTANCE = Native.loadLibrary(JNA_LIBRARY_NAME, OodleLibrary::class.java) as OodleLibrary
     }
 }

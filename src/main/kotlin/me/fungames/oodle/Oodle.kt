@@ -32,15 +32,33 @@ const val COMPRESSION_LEVEL_OPTIMAL3 = 7
 const val COMPRESSION_LEVEL_OPTIMAL4 = 8
 const val COMPRESSION_LEVEL_OPTIMAL5 = 9
 
+/**
+ * Singleton for oodle decompression and compression
+ */
 object Oodle {
     private val logger = KotlinLogging.logger {  }
     private lateinit var oodleLib: OodleLibrary
 
+    /**
+     * Decompresses a oodle compressed array
+     * @param src the compressed source data
+     * @param dstLength the uncompressed length
+     * @return the decompressed data
+     * @throws DecompressException when the decompression fails
+     */
+    @Throws(DecompressException::class)
     fun decompress(src: ByteArray, dstLength : Int) : ByteArray {
         val dst = ByteArray(dstLength)
         decompress(src, dst)
         return dst
     }
+    /**
+     * Decompresses a oodle compressed array
+     * @param src the compressed source data
+     * @param dst the destination buffer
+     * @throws DecompressException when the decompression fails
+     */
+    @Throws(DecompressException::class)
     fun decompress(src : ByteArray, dst : ByteArray) {
         val start = System.currentTimeMillis()
         if (!loadLib())
@@ -64,6 +82,15 @@ object Oodle {
         logger.debug("Oodle decompress: $srcLength => $dstLength ($seconds seconds)")
     }
 
+    /**
+     * Compresses a byte array
+     * @param src the uncompressed source data
+     * @param compressor the compressor to use
+     * @param compressionLevel the compression level to use
+     * @return the compressed data
+     * @throws CompressException when the compression fails
+     */
+    @Throws(CompressException::class)
     fun compress(src : ByteArray, compressor : Int, compressionLevel : Int) : ByteArray {
         val start = System.currentTimeMillis()
         if (!loadLib())
