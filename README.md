@@ -7,25 +7,34 @@
 ####Dependency
 ##### Maven
 - Add the repository
-		<repositories>
-			<repository>
-				<id>bintray-fungamesleaks-mavenRepo</id>
-				<name>bintray</name>
-				<url>https://dl.bintray.com/fungamesleaks/mavenRepo</url>
-			</repository>
-		</repositories>
+```xml
+<repositories>
+	<repository>
+		<id>bintray-fungamesleaks-mavenRepo</id>
+		<name>bintray</name>
+		<url>https://dl.bintray.com/fungamesleaks/mavenRepo</url>
+	</repository>
+</repositories>
+```
 - Add the dependency
-		<dependency>
-			<groupId>me.fungames</groupId>
-			<artifactId>JOodle</artifactId>
-			<version>1.0</version>
-		</dependency>
+```xml
+<dependency>
+	<groupId>me.fungames</groupId>
+	<artifactId>JOodle</artifactId>
+	<version>1.0</version>
+</dependency>
+```
 ##### Gradle
 - Add the repository
-		repositories {
-    		maven {
-        		url  "https://dl.bintray.com/fungamesleaks/mavenRepo"
-   				}
-		}
+```groovy
+repositories {
+	maven {
+		url  "https://dl.bintray.com/fungamesleaks/mavenRepo"
+	}
+}
+```
 - Add the dependency
-		implementation 'me.fungames:JOodle:1.0'
+```groovy
+implementation 'me.fungames:JOodle:1.0'
+```
+
