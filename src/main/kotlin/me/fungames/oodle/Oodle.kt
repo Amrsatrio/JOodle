@@ -36,7 +36,7 @@ const val COMPRESSION_LEVEL_OPTIMAL5 = 9
  * Singleton for oodle decompression and compression
  */
 object Oodle {
-    private val logger = KotlinLogging.logger {  }
+    private val logger = KotlinLogging.logger("Oodle")
     private lateinit var oodleLib: OodleLibrary
 
     /**

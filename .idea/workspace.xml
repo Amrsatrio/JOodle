@@ -2,7 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="369897be-796a-4da6-b110-4bc6081649f0" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/gradle.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/gradle.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/me/fungames/oodle/Oodle.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/me/fungames/oodle/Oodle.kt" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -133,7 +135,8 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1572005889129</updated>
-      <workItem from="1572005892299" duration="5031000" />
+      <workItem from="1572005892299" duration="6939000" />
+      <workItem from="1572079157118" duration="614000" />
     </task>
     <task id="LOCAL-00001" summary="added some docs">
       <created>1572011549574</created>
@@ -153,7 +156,9 @@
       <map>
         <entry key="MAIN">
           <value>
-            <State />
+            <State>
+              <option name="COLUMN_ORDER" />
+            </State>
           </value>
         </entry>
       </map>
