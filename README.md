@@ -1,10 +1,10 @@
 # JOodle
 
-####Oodle dll bindings for the jvm
+#### Oodle dll bindings for the jvm
 #### Usage
 	Oodle.decompress(compressedData : ByteArray, uncompressedLength : Int) returns ByteArray
 	Oodle.compress(uncompressedData : ByteArray, compressor : Int, compressionLevel : Int) returns ByteArray
-####Dependency
+#### Dependency
 ##### Maven
 - Add the repository
 ```xml

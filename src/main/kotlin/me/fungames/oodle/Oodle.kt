@@ -47,6 +47,7 @@ object Oodle {
      * @throws DecompressException when the decompression fails
      */
     @Throws(DecompressException::class)
+    @JvmStatic
     fun decompress(src: ByteArray, dstLength : Int) : ByteArray {
         val dst = ByteArray(dstLength)
         decompress(src, dst)
@@ -59,6 +60,7 @@ object Oodle {
      * @throws DecompressException when the decompression fails
      */
     @Throws(DecompressException::class)
+    @JvmStatic
     fun decompress(src : ByteArray, dst : ByteArray) {
         val start = System.currentTimeMillis()
         if (!loadLib())
@@ -91,6 +93,7 @@ object Oodle {
      * @throws CompressException when the compression fails
      */
     @Throws(CompressException::class)
+    @JvmStatic
     fun compress(src : ByteArray, compressor : Int, compressionLevel : Int) : ByteArray {
         val start = System.currentTimeMillis()
         if (!loadLib())
