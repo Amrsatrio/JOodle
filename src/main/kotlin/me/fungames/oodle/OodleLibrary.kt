@@ -1,14 +1,12 @@
 package me.fungames.oodle
 
 import com.sun.jna.Library
-import com.sun.jna.Native
 import com.sun.jna.Pointer
-
 
 internal interface OodleLibrary : Library {
     /**
-     * Original signature : `int OodleLZ_Compress(int, uint8*, size_t, uint8*, int, void*, size_t, size_t, void*, size_t)`<br></br>
-     * *native declaration : line 2*
+     * Original signature: `int OodleLZ_Compress(int, uint8*, size_t, uint8*, int, void*, size_t, size_t, void*, size_t)`<br></br>
+     * *native declaration: line 2*
      */
     fun OodleLZ_Compress(
         codec: Int,
@@ -24,7 +22,7 @@ internal interface OodleLibrary : Library {
     ): Int
 
     /**
-     * Original signature : `int OodleLZ_Decompress(uint8*, int, uint8*, size_t, int, int, int, uint8*, size_t, void*, void*, void*, size_t, int)`<br></br>
+     * Original signature: `int OodleLZ_Decompress(uint8*, int, uint8*, size_t, int, int, int, uint8*, size_t, void*, void*, void*, size_t, int)`
      */
     fun OodleLZ_Decompress(
         src_buf: Pointer,
@@ -42,9 +40,4 @@ internal interface OodleLibrary : Library {
         scratch_size: Long,
         threadPhase: Int
     ): Int
-
-    companion object {
-        const val JNA_LIBRARY_NAME = "oo2core_7_win64"
-        val INSTANCE = Native.loadLibrary(JNA_LIBRARY_NAME, OodleLibrary::class.java) as OodleLibrary
-    }
 }
