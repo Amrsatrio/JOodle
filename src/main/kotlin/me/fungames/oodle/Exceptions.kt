@@ -1,4 +1,7 @@
 package me.fungames.oodle
 
-class DecompressException(override val message: String?, override val cause: Throwable? = null) : Exception()
-class CompressException(override val message: String?, override val cause: Throwable? = null) : Exception()
+import java.io.IOException
+
+open class OodleException(message: String?, cause: Throwable? = null) : IOException(message, cause)
+class DecompressException(message: String?, cause: Throwable? = null) : OodleException(message, cause)
+class CompressException(message: String?, cause: Throwable? = null) : OodleException(message, cause)

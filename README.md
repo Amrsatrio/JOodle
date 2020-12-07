@@ -1,9 +1,11 @@
 # JOodle
 
-#### Oodle dll bindings for the jvm
+#### Oodle DLL bindings for the JVM
 #### Usage
-	Oodle.decompress(compressedData : ByteArray, uncompressedLength : Int) returns ByteArray
-	Oodle.compress(uncompressedData : ByteArray, compressor : Int, compressionLevel : Int) returns ByteArray
+	Oodle.decompress(compressedData: ByteArray, uncompressedLength: Int) returns ByteArray
+	Oodle.decompress(compressedData: ByteArray, uncompressedData: ByteArray)
+	Oodle.decompress(compressedData: ByteArray, compressedDataOffset: Int, compressedLength: Int, uncompressedData: ByteArray, uncompressedDataOffset: Int, uncompressedLength: Int)
+	Oodle.compress(uncompressedData: ByteArray, compressor: Int, compressionLevel: Int) returns ByteArray
 #### Dependency
 ##### Maven
 - Add the repository
@@ -21,7 +23,7 @@
 <dependency>
 	<groupId>me.fungames</groupId>
 	<artifactId>JOodle</artifactId>
-	<version>1.0</version>
+	<version>1.2</version>
 </dependency>
 ```
 ##### Gradle
@@ -29,12 +31,12 @@
 ```groovy
 repositories {
 	maven {
-		url  "https://dl.bintray.com/fungamesleaks/mavenRepo"
+		url "https://dl.bintray.com/fungamesleaks/mavenRepo"
 	}
 }
 ```
 - Add the dependency
 ```groovy
-implementation 'me.fungames:JOodle:1.0'
+implementation 'me.fungames:JOodle:1.2'
 ```
 

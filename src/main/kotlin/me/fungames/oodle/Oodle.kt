@@ -1,8 +1,9 @@
 package me.fungames.oodle
 
 import com.sun.jna.Memory
+import com.sun.jna.Native
 import com.sun.jna.Pointer
-import mu.KotlinLogging
+import org.slf4j.LoggerFactory
 import java.io.File
 import java.io.FileOutputStream
 
@@ -33,76 +34,86 @@ const val COMPRESSION_LEVEL_OPTIMAL4 = 8
 const val COMPRESSION_LEVEL_OPTIMAL5 = 9
 
 /**
- * Singleton for oodle decompression and compression
+ * Singleton for Oodle decompression and compression
  */
 object Oodle {
-    private val logger = KotlinLogging.logger("Oodle")
+    private val logger = LoggerFactory.getLogger("Oodle")
     private lateinit var oodleLib: OodleLibrary
 
     /**
-     * Decompresses a oodle compressed array
+     * Decompresses an Oodle compressed array
      * @param src the compressed source data
-     * @param dstLength the uncompressed length
+     * @param dstLen the uncompressed length
      * @return the decompressed data
      * @throws DecompressException when the decompression fails
      */
     @Throws(DecompressException::class)
     @JvmStatic
-    fun decompress(src: ByteArray, dstLength : Int) : ByteArray {
-        val dst = ByteArray(dstLength)
-        decompress(src, dst)
-        return dst
-    }
+    fun decompress(src: ByteArray, dstLen: Int) = ByteArray(dstLen).also { decompress(src, it) }
+
     /**
-     * Decompresses a oodle compressed array
+     * Decompresses an Oodle compressed array
      * @param src the compressed source data
      * @param dst the destination buffer
      * @throws DecompressException when the decompression fails
+     * @throws IllegalStateException when the library could not be loaded
      */
     @Throws(DecompressException::class)
     @JvmStatic
-    fun decompress(src : ByteArray, dst : ByteArray) {
-        val start = System.currentTimeMillis()
-        if (!loadLib())
-            throw IllegalStateException("oodle library could not be loaded")
+    fun decompress(src: ByteArray, dst: ByteArray) {
+        decompress(src, 0, src.size, dst, 0, dst.size)
+    }
 
-        val srcLength = src.size
-        val dstLength = dst.size
-        val sourcePointer = Memory(srcLength.toLong())
-        sourcePointer.write(0L, src, 0, srcLength)
-        val dstPointer = Memory(dstLength.toLong())
+    /**
+     * Decompresses an Oodle compressed array
+     * @param src the compressed source data
+     * @param srcOff the offset into `src`
+     * @param srcLen the compressed length
+     * @param dst the destination buffer
+     * @param dstOff the offset into `dst`
+     * @param dstLen the uncompressed length
+     * @throws DecompressException when the decompression fails
+     * @throws IllegalStateException when the library could not be loaded
+     */
+    @Throws(DecompressException::class)
+    @JvmStatic
+    fun decompress(src: ByteArray, srcOff: Int, srcLen: Int, dst: ByteArray, dstOff: Int, dstLen: Int) {
+        ensureLib()
+        val start = System.currentTimeMillis()
+        val sourcePointer = Memory(srcLen.toLong())
+        sourcePointer.write(0L, src, srcOff, srcLen)
+        val dstPointer = Memory(dstLen.toLong())
         val resultCode = oodleLib.OodleLZ_Decompress(
-            sourcePointer, srcLength,
-            dstPointer, dstLength.toLong(),
-            0, 0, 0, Pointer.NULL, 0L, Pointer.NULL, Pointer.NULL, Pointer.NULL, 0L, 0
+            sourcePointer, srcLen,
+            dstPointer, dstLen.toLong(),
+            0, 0, Integer.MAX_VALUE, Pointer.NULL, 0L, Pointer.NULL, Pointer.NULL, Pointer.NULL, 0L, 0
         )
         if (resultCode <= 0)
             throw DecompressException("Oodle decompression failed with code $resultCode")
-        dstPointer.read(0, dst, 0, dstLength)
+        dstPointer.read(0, dst, dstOff, dstLen)
         val stop = System.currentTimeMillis()
         val seconds = (stop - start).toFloat() / 1000
-        logger.debug("Oodle decompress: $srcLength => $dstLength ($seconds seconds)")
+        logger.trace("Oodle decompress: $srcLen => $dstLen ($seconds seconds)")
     }
 
     /**
      * Compresses a byte array
-     * @param src the uncompressed source data
+     * @param uncompressed the uncompressed source data
      * @param compressor the compressor to use
      * @param compressionLevel the compression level to use
      * @return the compressed data
      * @throws CompressException when the compression fails
+     * @throws IllegalStateException when the library could not be loaded
      */
     @Throws(CompressException::class)
     @JvmStatic
-    fun compress(src : ByteArray, compressor : Int, compressionLevel : Int) : ByteArray {
+    fun compress(uncompressed: ByteArray, compressor: Int, compressionLevel: Int): ByteArray {
+        ensureLib()
         val start = System.currentTimeMillis()
-        if (!loadLib())
-            throw IllegalStateException("oodle library could not be loaded")
-
-        val srcLength = src.size
+        val srcLength = uncompressed.size
         val dstLength = srcLength + 65536
         val sourcePointer = Memory(srcLength.toLong())
-        sourcePointer.write(0L, src, 0, srcLength)
+        sourcePointer.write(0L, uncompressed, 0, srcLength)
         val dstPointer = Memory(dstLength.toLong())
         val resultCode = oodleLib.OodleLZ_Compress(
             compressor,
@@ -111,31 +122,33 @@ object Oodle {
             Pointer.NULL, 0, 0, Pointer.NULL, 0
         )
         if (resultCode <= 0)
-            throw DecompressException("Oodle compression failed with code $resultCode")
+            throw CompressException("Oodle compression failed with code $resultCode")
         val dst = dstPointer.getByteArray(0, resultCode)
         val stop = System.currentTimeMillis()
         val seconds = (stop - start).toFloat() / 1000
-        logger.debug("Oodle decompress: $srcLength => $dstLength ($seconds seconds)")
+        logger.trace("Oodle decompress: $srcLength => $dstLength ($seconds seconds)")
         return dst
     }
 
-    private fun loadLib() : Boolean {
-        if(::oodleLib.isInitialized)
-            return true
-        val oodleLibFile = File(OodleLibrary.JNA_LIBRARY_NAME + ".dll")
+    @Throws(IllegalStateException::class)
+    private fun ensureLib() {
+        if (::oodleLib.isInitialized)
+            return
+        val oodleLibName = "oo2core_7_win64"
+        val oodleLibFile = File("$oodleLibName.dll")
         if (!oodleLibFile.exists()) {
-            val input = this::class.java.getResourceAsStream("/${OodleLibrary.JNA_LIBRARY_NAME}.dll") ?: return false
+            val input = this::class.java.getResourceAsStream("/oo2core_7_win64.dll")
+                ?: throw IllegalStateException("Oodle library could not be loaded")
             val out = FileOutputStream(oodleLibFile)
             input.copyTo(out)
             input.close()
             out.close()
         }
         System.setProperty("jna.library.path", System.getProperty("user.dir"))
-        return try {
-            this.oodleLib = OodleLibrary.INSTANCE
-            true
-        } catch (e : Exception) {
-            false
+        try {
+            this.oodleLib = Native.load(oodleLibName, OodleLibrary::class.java)
+        } catch (e: Exception) {
+            throw IllegalStateException("Oodle library could not be loaded", e)
         }
     }
 }
