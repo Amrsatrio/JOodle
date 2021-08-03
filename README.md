@@ -12,31 +12,27 @@
 ```xml
 <repositories>
 	<repository>
-		<id>bintray-fungamesleaks-mavenRepo</id>
-		<name>bintray</name>
-		<url>https://dl.bintray.com/fungamesleaks/mavenRepo</url>
+		<id>jitpack.io</id>
+		<url>https://jitpack.io</url>
 	</repository>
 </repositories>
 ```
 - Add the dependency
 ```xml
 <dependency>
-	<groupId>me.fungames</groupId>
+	<groupId>com.github.FabianFG</groupId>
 	<artifactId>JOodle</artifactId>
-	<version>1.2</version>
+	<version>1.3</version>
 </dependency>
 ```
 ##### Gradle
 - Add the repository
 ```groovy
 repositories {
-	maven {
-		url "https://dl.bintray.com/fungamesleaks/mavenRepo"
-	}
+	maven { url 'https://jitpack.io' }
 }
 ```
 - Add the dependency
 ```groovy
-implementation 'me.fungames:JOodle:1.2'
+implementation 'com.github.FabianFG:JOodle:1.3'
 ```
-

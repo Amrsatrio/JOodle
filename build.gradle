@@ -1,12 +1,11 @@
 plugins {
-    id 'org.jetbrains.kotlin.jvm' version '1.4.20'
+    id 'org.jetbrains.kotlin.jvm' version '1.5.30-M1'
     id 'maven-publish'
-    id 'com.jfrog.bintray' version '1.8.5'
     id 'org.jetbrains.dokka' version '0.10.0'
 }
 
 group 'me.fungames'
-version '1.2'
+version '1.3'
 
 sourceCompatibility = 1.8
 
@@ -15,10 +14,10 @@ repositories {
 }
 
 dependencies {
-    implementation 'net.java.dev.jna:jna:5.6.0'
+    implementation 'net.java.dev.jna:jna:5.8.0'
     implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
-    implementation 'org.slf4j:slf4j-api:1.7.30'
-    testCompile 'junit:junit:4.13.1'
+    implementation 'org.slf4j:slf4j-api:1.7.32'
+    testImplementation 'junit:junit:4.13.2'
 }
 
 task sourcesJar(type: Jar) {
@@ -31,30 +30,10 @@ task javadocJar(type: Jar) {
     classifier = 'javadoc'
 }
 
-bintray {
-    user = findProperty("bintray.user")
-    key = findProperty('bintray.key')
-    publications = ['maven']
-
-    pkg {
-        repo = 'mavenRepo'
-        name = 'JOodle'
-        userOrg = 'fungamesleaks'
-        licenses = ['Apache-2.0']
-        vcsUrl = 'https://github.com/FunGamesLeaks/JOodle.git'
-        version {
-            name = version
-            desc = version
-            released = new Date()
-        }
-    }
-}
-
-
 publishing {
     publications {
         maven(MavenPublication) {
-            artifactId = "JOodle"
+            artifactId = 'JOodle'
             groupId = group
             version = version
             from components.java
@@ -64,10 +43,9 @@ publishing {
     }
 }
 
-
 compileKotlin {
-    kotlinOptions.jvmTarget = "1.8"
+    kotlinOptions.jvmTarget = '1.8'
 }
 compileTestKotlin {
-    kotlinOptions.jvmTarget = "1.8"
+    kotlinOptions.jvmTarget = '1.8'
 }
