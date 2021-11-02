@@ -9,35 +9,35 @@ internal interface OodleLibrary : Library {
      * *native declaration: line 2*
      */
     fun OodleLZ_Compress(
-        codec: Int,
-        src_buf: Pointer,
-        src_len: Long,
-        dst_buf: Pointer,
+        compressor: Int,
+        rawBuf: Pointer,
+        rawLen: Long,
+        compBuf: Pointer,
         level: Int,
-        opts: Pointer?,
-        offs: Long,
-        unused: Long,
-        scratch: Pointer?,
-        scratch_size: Long
+        pOptions: Pointer?,
+        dictionaryBase: Long,
+        lrm: Long,
+        scratchMem: Pointer?,
+        scratchSize: Long
     ): Int
 
     /**
      * Original signature: `int OodleLZ_Decompress(uint8*, int, uint8*, size_t, int, int, int, uint8*, size_t, void*, void*, void*, size_t, int)`
      */
     fun OodleLZ_Decompress(
-        src_buf: Pointer,
-        src_len: Int,
-        dst: Pointer,
-        dst_size: Long,
-        fuzz: Int,
-        crc: Int,
-        verbose: Int,
-        dst_base: Pointer?,
-        e: Long,
-        cb: Pointer?,
-        cb_ctx: Pointer?,
-        scratch: Pointer?,
-        scratch_size: Long,
+        compBuf: Pointer,
+        compBufSize: Int,
+        rawBuf: Pointer,
+        rawLen: Long,
+        fuzzSafe: Int,
+        checkCRC: Int,
+        verbosity: Int,
+        decBufBase: Pointer?,
+        decBufSize: Long,
+        fpCallback: Pointer?,
+        callbackUserData: Pointer?,
+        decoderMemory: Pointer?,
+        decoderMemorySize: Long,
         threadPhase: Int
     ): Int
 }

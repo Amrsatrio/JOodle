@@ -134,21 +134,27 @@ object Oodle {
     private fun ensureLib() {
         if (::oodleLib.isInitialized)
             return
-        val oodleLibName = "oo2core_7_win64"
-        val oodleLibFile = File("$oodleLibName.dll")
-        if (!oodleLibFile.exists()) {
+        val oodleLibName = System.getProperty("JOodle.libName", "oo2core_7_win64.dll")
+        val oodleLibFile = File(oodleLibName)
+        var canLoad = oodleLibFile.exists()
+        if (!canLoad && System.getProperty("os.name").contains("Windows")) {
             val input = this::class.java.getResourceAsStream("/oo2core_7_win64.dll")
-                ?: throw IllegalStateException("Oodle library could not be loaded")
-            val out = FileOutputStream(oodleLibFile)
-            input.copyTo(out)
-            input.close()
-            out.close()
+            if (input != null) {
+                val out = FileOutputStream(oodleLibFile)
+                input.copyTo(out)
+                input.close()
+                out.close()
+                canLoad = true
+            }
+        }
+        if (!canLoad){
+            throw IllegalStateException("Oodle library could not be loaded")
         }
         System.setProperty("jna.library.path", System.getProperty("user.dir"))
         try {
-            this.oodleLib = Native.load(oodleLibName, OodleLibrary::class.java)
+            oodleLib = Native.load(oodleLibName, OodleLibrary::class.java)
         } catch (e: Exception) {
-            throw IllegalStateException("Oodle library could not be loaded", e)
+            throw IllegalStateException("Oodle library failed to load", e)
         }
     }
 }
