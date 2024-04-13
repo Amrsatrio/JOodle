@@ -86,7 +86,7 @@ object Oodle {
         val resultCode = oodleLib.OodleLZ_Decompress(
             sourcePointer, srcLen,
             dstPointer, dstLen.toLong(),
-            0, 0, Integer.MAX_VALUE, Pointer.NULL, 0L, Pointer.NULL, Pointer.NULL, Pointer.NULL, 0L, 0
+            0, 0, 0, Pointer.NULL, 0L, Pointer.NULL, Pointer.NULL, Pointer.NULL, 0L, 0
         )
         if (resultCode <= 0)
             throw DecompressException("Oodle decompression failed with code $resultCode")
